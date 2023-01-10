@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        https://tv.ipnet.ua/
+// @match        *://tv.ipnet.ua/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=ipnet.ua
 // @grant        none
 // ==/UserScript==
@@ -19,22 +19,26 @@
         { 'id': 665, 'name': '2+2', 'nick': '2plus2', 'is_tshift_allowed': true, 'url': 'https://api-tv.ipnet.ua/api/v1/manifest/1340433820.m3u8', 'tshift_url': 'https://api-tv.ipnet.ua/api/v1/manifest/1340433820.m3u8?timeshift=', 'icon_url': 'https://api-tv.ipnet.ua/media/channels-icons/1340433820.gif', 'is_tshift': false, 'epg_static': 'https://v3-ipjet.ipnet.ua/static/programs/665.json', 'preview_url': 'https://v3.ipjet.ipnet.ua/thumbnails/1340433820/', 'tshift_duration': 259200, 'can_buy': false, 'youtube_playlist_id': '', 'channel_type': 'channel', 'is_disable_timeshift_rew': false, 'is_disable_timeshift_ff': false },
         { 'id': 775, 'name': 'VIP Comedy', 'nick': 'vip_comedy_hd', 'is_tshift_allowed': true, 'url': 'https://api-tv.ipnet.ua/api/v1/manifest/1302383551.m3u8', 'tshift_url': 'https://api-tv.ipnet.ua/api/v1/manifest/1302383551.m3u8?timeshift=', 'icon_url': 'https://api-tv.ipnet.ua/media/channels-icons/1302383551.gif', 'is_tshift': false, 'epg_static': 'https://v3-ipjet.ipnet.ua/static/programs/775.json', 'preview_url': 'https://v3.ipjet.ipnet.ua/thumbnails/1302383551/', 'tshift_duration': 172800, 'can_buy': false, 'youtube_playlist_id': '', 'channel_type': 'channel', 'is_disable_timeshift_rew': false, 'is_disable_timeshift_ff': false },
         { 'id': 776, 'name': 'VIP Megahit', 'nick': 'vip_megahit_hd', 'is_tshift_allowed': true, 'url': 'https://api-tv.ipnet.ua/api/v1/manifest/1302387861.m3u8', 'tshift_url': 'https://api-tv.ipnet.ua/api/v1/manifest/1302387861.m3u8?timeshift=', 'icon_url': 'https://api-tv.ipnet.ua/media/channels-icons/1302387861.gif', 'is_tshift': false, 'epg_static': 'https://v3-ipjet.ipnet.ua/static/programs/776.json', 'preview_url': 'https://v3.ipjet.ipnet.ua/thumbnails/1302387861/', 'tshift_duration': 172800, 'can_buy': false, 'youtube_playlist_id': '', 'channel_type': 'channel', 'is_disable_timeshift_rew': false, 'is_disable_timeshift_ff': false },
-   ];
+    ];
 
     await login();
 
-    const SET_CHANNEL = '';
+    const SET_CHANNEL = undefined;
     const ADD_CHANNELS_NAMES = ['1+1 HD', '2+2 HD'];
 
     let video;
 
     let scope = await findFunc();
 
-    await addChannels(scope);
-    setChannel(scope);
+    await new Promise(resolve => setTimeout(() => resolve(), 2000));
+
+    ADD_CHANNELS_NAMES && addChannels(scope);
+    SET_CHANNEL && setChannel(scope);
     mediaKeys(scope);
 
-    setTimeout(() => scope.Nav?.hideAll(), 1000);
+    scope.Channels.categories.forEach(c => c.channels.forEach(x => { x.can_buy = false; }));
+    scope.Nav?.hideAll();
+    scope.Player?.toggleCursorMouse();
 
     async function findFunc() {
         return await new Promise(resolve => {
@@ -50,26 +54,19 @@
         });
     }
 
-    async function addChannels(scope) {
-        return await new Promise(resolve => {
-            setTimeout(() => {
-                scope.Channels.categories.forEach(c => c.channels.forEach(x => { x.can_buy = false; }));
+    function addChannels(scope) {
+        let filtered_channel_names = ADD_CHANNELS_NAMES.filter(x => scope.Channels.all_channels.findIndex(y => y.name === x) === -1);
+        let selected_channels = channels.filter(x => filtered_channel_names.includes(x.name));
 
-                let filtered_channel_names = ADD_CHANNELS_NAMES.filter(x => scope.Channels.all_channels.findIndex(y => y.name === x) === -1);
-                let selected_channels = channels.filter(x => filtered_channel_names.includes(x.name));
+        if (selected_channels.length === 0) return;
 
-                if (selected_channels.length === 0) resolve();
+        scope.Channels.all_channels.splice(0, 0, ...selected_channels);
 
-                scope.Channels.all_channels.splice(0, 0, ...selected_channels);
-
-                scope.Channels.currentChannelIndex = scope.Channels.all_channels.findIndex(x => x.id === scope.Channels.currentChannel.id);
-                resolve();
-            }, 1000);
-        });
+        scope.Channels.currentChannelIndex = scope.Channels.all_channels.findIndex(x => x.id === scope.Channels.currentChannel.id);
     }
 
     function setChannel(scope) {
-        if (SET_CHANNEL && scope.Channels.currentChannel.name !== SET_CHANNEL) {
+        if (scope.Channels.currentChannel.name !== SET_CHANNEL) {
             let index = scope.Channels.all_channels.findIndex(x => x.name === SET_CHANNEL);
             let channel = scope.Channels.all_channels[index];
 
@@ -82,8 +79,6 @@
     }
 
     function mediaKeys(scope) {
-        scope.Player?.toggleCursorMouse();
-
         let paused = false;
 
         document.addEventListener('keyup', (e) => {
@@ -148,8 +143,8 @@
             });
 
             if (loginData?.code === 200) {
-                window.localStorage.setItem("ngStorage-token", '"' + loginData.data.token + '"');
-                window.localStorage.setItem("ngStorage-refresh_token", '"' + loginData.data.refresh_token + '"');
+                window.localStorage.setItem("ngStorage-token", `"${loginData.data.token}"`);
+                window.localStorage.setItem("ngStorage-refresh_token", `"${loginData.data.refresh_token}"`);
 
                 document.location.reload();
             }

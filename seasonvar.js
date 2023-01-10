@@ -6,7 +6,7 @@
 // @author       You
 // @icon         https://www.google.com/s2/favicons?domain=tampermonkey.net
 // @grant        none
-// @match        http://seasonvar.ru/*
+// @match        *://seasonvar.ru/*
 // ==/UserScript==
 
 (function() {
