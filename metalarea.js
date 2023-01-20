@@ -29,7 +29,7 @@
 
     function postAndRedirect(url, postData)
     {
-        let html = `<input type="hidden" name="referer" value=${window.location.href}>`;
+        let html = `<input type="hidden" name="referer" value=${window.location.href.replace("http", "https")}>`;
 
         for (var key in postData)
         {
