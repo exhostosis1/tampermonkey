@@ -36,7 +36,20 @@
     SET_CHANNEL && setChannel(scope);
     mediaKeys(scope);
 
-    scope.Channels.categories.forEach(c => c.channels.forEach(x => { x.can_buy = false; }));
+    scope.Channels.categories.forEach(c => c.channels.forEach(x => {
+        if(x.can_buy) {
+            x.can_buy = false;
+            x.is_tshift = true;
+        }
+    }));
+
+    scope.Channels.currentChannel.is_tshift = true;
+    let epg = scope.EPG.currentChannelEPG;
+    scope.EPG.currentChannelEPG = [];
+    scope.$apply();
+    scope.EPG.currentChannelEPG = epg;
+    scope.$apply();
+
     scope.Nav?.hideAll();
     scope.Player?.toggleCursorMouse();
 
