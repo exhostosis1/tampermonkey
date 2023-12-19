@@ -12,41 +12,36 @@
 (function() {
     'use strict';
 
-    if(document.getElementById("userlinksguest") !== null)
-    {
-        login();
-    }
+    const LOGIN_PAGE = 'https://metalarea.org/forum/index.php?act=Login&CODE=01';
+    const USERNAME = "exhostosis";
+    const PASSWORD = "e74eae2fd9adc9f";
 
-    function login() {
+    if(document.getElementById("userlinksguest"))
+    {
         let formData = {
-            UserName: "exhostosis",
-            PassWord: "e74eae2fd9adc9f",
+            UserName: USERNAME,
+            PassWord: PASSWORD,
             CookieDate: "1"
         };
 
-        postAndRedirect("https://metalarea.org/forum/index.php?act=Login&CODE=01", formData);
-    };
-
-    function postAndRedirect(url, postData)
-    {
         let html = `<input type="hidden" name="referer" value=${window.location.href.replace("http", "https")}>`;
 
-        for (var key in postData)
+        for (var key in formData)
         {
-            if (postData.hasOwnProperty(key))
+            if (formData.hasOwnProperty(key))
             {
-                html += `<input type='hidden' name='${key}' value='${postData[key]}'></input>`;
+                html += `<input type='hidden' name='${key}' value='${formData[key]}'></input>`;
             }
         }
 
         var formElement = document.createElement("form");
         formElement.setAttribute("method", "post");
         formElement.setAttribute("name", "LOGIN");
-        formElement.setAttribute("action", url);
+        formElement.setAttribute("action", LOGIN_PAGE);
 
         formElement.innerHTML = html;
 
         document.getElementsByTagName('body')[0].append(formElement);
         formElement.submit();
-    };
+    }
 })();
