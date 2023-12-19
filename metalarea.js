@@ -9,15 +9,14 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
     const LOGIN_PAGE = 'https://metalarea.org/forum/index.php?act=Login&CODE=01';
     const USERNAME = "exhostosis";
     const PASSWORD = "e74eae2fd9adc9f";
 
-    if(document.getElementById("userlinksguest"))
-    {
+    if (document.getElementById("userlinksguest")) {
         let formData = {
             UserName: USERNAME,
             PassWord: PASSWORD,
@@ -26,10 +25,8 @@
 
         let html = `<input type="hidden" name="referer" value=${window.location.href.replace("http", "https")}>`;
 
-        for (var key in formData)
-        {
-            if (formData.hasOwnProperty(key))
-            {
+        for (var key in formData) {
+            if (Object.prototype.hasOwnProperty.call(formData, key)) {
                 html += `<input type='hidden' name='${key}' value='${formData[key]}'></input>`;
             }
         }

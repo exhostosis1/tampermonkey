@@ -79,7 +79,7 @@
                 x.is_tshift = true;
             }
         }));
-    };
+    }
 
     function buyCurrentChannel(scope) {
         scope.Channels.currentChannel.is_tshift = true;
@@ -127,7 +127,7 @@
                 scope.Channels?.switchChannels(channel, index);
                 scope.Nav.blocks.topDescription.handler(false);
                 scope.Channels.setCurrentChannelIndex(channel.id, index);
-            };
+            }
         }
     }
 
@@ -201,5 +201,5 @@
 
             return response.json();
         }
-    };
+    }
 })();
