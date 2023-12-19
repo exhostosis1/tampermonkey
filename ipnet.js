@@ -58,14 +58,10 @@
     LOGIN_REQUIRED && await login();
 
     await new Promise(resolve => setTimeout(() => resolve(), 2000));
-
     let scope = await findScope();
 
-    CHANNELS_TO_ADD === "all" && addChannels(scope, CHANNELS);
-    CHANNELS_TO_ADD && addChannels(scope, CHANNELS.filter(x => CHANNELS_TO_ADD.includes(x.id)));
-
+    CHANNELS_TO_ADD && addChannels(scope, CHANNELS_TO_ADD === "all" ? CHANNELS : CHANNELS.filter(x => CHANNELS_TO_ADD.includes(x.id)));
     SWITCH_TO_CHANNEL && setChannel(scope, SWITCH_TO_CHANNEL);
-
     processMediaKeys(scope);
     buyCurrentChannel(scope);
     buyChannels(scope);
