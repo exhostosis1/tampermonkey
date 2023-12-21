@@ -9,15 +9,24 @@
 // @match        http://seasonvar.ru/*
 // ==/UserScript==
 
-(function() {
+(async function() {
     'use strict';
+    
+    let player;
+
+    await new Promise(resolve => setTimeout(() => { 
+        player = window.player;
+        resolve();
+     }, 2000));
+    
     document.exitPictureInPicture = null;
+
     document.addEventListener('keyup', (e) => {
         if (e.key === 'MediaTrackPrevious') {
-            window.player.api('prev');
+            player.api('prev');
         }
         else if (e.key === 'MediaTrackNext') {
-            window.player.api('next');
+            player.api('next');
         }
     });
 })();

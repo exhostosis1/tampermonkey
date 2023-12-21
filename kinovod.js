@@ -9,14 +9,15 @@
 // @match        https://kinovod.net/*
 // ==/UserScript==
 
-(function() {
+(async function() {
     'use strict';
 
     let player;
 
-    setTimeout(() => {
-        player = window.pljssglobal[0]
-    }, 2000);
+    await new Promise(resolve => setTimeout(() => {
+        player = window.pljssglobal[0];
+        resolve();
+    }, 2000));
 
     document.addEventListener('keyup', (e) => {
         if (e.key === 'MediaTrackPrevious') {

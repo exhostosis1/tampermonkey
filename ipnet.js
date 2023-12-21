@@ -91,14 +91,14 @@
     }
 
     async function findScope() {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             let interval = setInterval(() => {
                 let video = document.getElementsByTagName('video')[0];
                 if (video) {
                     let scope = window?.angular?.element(video)?.scope();
 
                     clearInterval(interval);
-                    resolve(scope);
+                    scope ? resolve(scope) : reject;
                 }
             }, 100);
         });
@@ -109,11 +109,13 @@
 
         if (selected_channels.length === 0) return;
 
-        var category = { ...scope.Channels.categories[0] };
-        category.name = "Added";
-        category.note = "added";
-        category.$$hashKey = "added";
-        category.channels = selected_channels;
+        var category = {
+            name: "Added",
+            note: "added",
+            $$hashKey: "added",
+            visibility: true,
+            channels: selected_channels
+        };
 
         scope.Channels.categories.push(category);
     }
@@ -132,7 +134,7 @@
     }
 
     function processMediaKeys() {
-        let paused = false;
+        let video = document.getElementsByTagName('video')[0];
 
         document.addEventListener('keyup', (e) => {
             if (e.key === 'MediaTrackPrevious') {
@@ -142,12 +144,10 @@
                 scope.Channels.nextChannel();
             }
             else if (e.key === 'MediaPlayPause') {
-                if (paused) {
+                if (video.paused) {
                     scope.Player.restore();
-                    paused = false;
                 } else {
                     scope.Player.pause();
-                    paused = true;
                 }
             }
             else if (e.key === 'Enter') {
@@ -185,8 +185,8 @@
             }
         }
 
-        async function postData(url = '', data = {}) {
-            const response = await fetch(url, {
+        function postData(url = '', data = {}) {
+            return fetch(url, {
                 method: 'POST',
                 mode: 'cors',
                 cache: 'no-cache',
@@ -197,9 +197,8 @@
                 redirect: 'follow',
                 referrerPolicy: 'no-referrer',
                 body: JSON.stringify(data)
-            });
-
-            return response.json();
+            })
+                .then(res => res.json());
         }
     }
 })();
