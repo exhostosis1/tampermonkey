@@ -23,7 +23,7 @@
             CookieDate: "1"
         };
 
-        let html = `<input type="hidden" name="referer" value=${window.location.href.replace("http:", "https:")}>`;
+        let html = `<input type="hidden" name="referer" value="${window.location.href.replace("http:", "https:")}">`;
 
         for (var key in formData) {
             if (Object.prototype.hasOwnProperty.call(formData, key)) {
