@@ -1,13 +1,4 @@
 {
-  "name": "tampermonkey",
-  "version": "1.0.0",
-  "description": "",
-  "main": "ipnet.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^15.0.0",

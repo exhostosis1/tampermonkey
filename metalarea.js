@@ -9,36 +9,38 @@
 // @grant        none
 // ==/UserScript==
 
+// eslint-disable-next-line wrap-iife, func-names
 (function () {
-    'use strict';
+  // eslint-disable-next-line strict, lines-around-directive
+  'use strict';
 
-    const LOGIN_PAGE = 'https://metalarea.org/forum/index.php?act=Login&CODE=01';
-    const USERNAME = "exhostosis";
-    const PASSWORD = "e74eae2fd9adc9f";
+  const LOGIN_PAGE = 'https://metalarea.org/forum/index.php?act=Login&CODE=01';
+  const USERNAME = 'exhostosis';
+  const PASSWORD = 'e74eae2fd9adc9f';
 
-    if (document.getElementById("userlinksguest")) {
-        let formData = {
-            UserName: USERNAME,
-            PassWord: PASSWORD,
-            CookieDate: "1"
-        };
+  if (document.getElementById('userlinksguest')) {
+    const formData = {
+      UserName: USERNAME,
+      PassWord: PASSWORD,
+      CookieDate: '1',
+    };
 
-        let html = `<input type="hidden" name="referer" value="${window.location.href.replace("http:", "https:")}">`;
+    let html = `<input type='hidden' name='referer' value='${window.location.href.replace('http:', 'https:')}'>`;
 
-        for (var key in formData) {
-            if (Object.prototype.hasOwnProperty.call(formData, key)) {
-                html += `<input type='hidden' name='${key}' value='${formData[key]}'></input>`;
-            }
-        }
+    Object.keys(formData).forEach((key) => {
+      if (Object.prototype.hasOwnProperty.call(formData, key)) {
+        html += `<input type='hidden' name='${key}' value='${formData[key]}'></input>`;
+      }
+    });
 
-        var formElement = document.createElement("form");
-        formElement.setAttribute("method", "post");
-        formElement.setAttribute("name", "LOGIN");
-        formElement.setAttribute("action", LOGIN_PAGE);
+    const formElement = document.createElement('form');
+    formElement.setAttribute('method', 'post');
+    formElement.setAttribute('name', 'LOGIN');
+    formElement.setAttribute('action', LOGIN_PAGE);
 
-        formElement.innerHTML = html;
+    formElement.innerHTML = html;
 
-        document.getElementsByTagName('body')[0].append(formElement);
-        formElement.submit();
-    }
+    document.getElementsByTagName('body')[0].append(formElement);
+    formElement.submit();
+  }
 })();

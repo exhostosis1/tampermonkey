@@ -9,59 +9,65 @@
 // @match        https://kinovod.net/*
 // ==/UserScript==
 
+// eslint-disable-next-line wrap-iife, func-names
 (async function () {
-    'use strict';
-    let player;
+  // eslint-disable-next-line strict, lines-around-directive
+  'use strict';
 
-    await new Promise(resolve => setTimeout(() => {
-        player = window.pljsglobal && window.pljsglobal[0];
-        resolve();
-    }, 2000));
+  let player;
 
-    if (player) {
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'MediaTrackPrevious') {
-                player.api('prev');
-            }
-            else if (e.key === 'MediaTrackNext') {
-                player.api('next');
-            }
-        });
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      player = window.pljsglobal && window.pljsglobal[0];
+      resolve();
+    }, 2000);
+  });
+
+  if (player) {
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'MediaTrackPrevious') {
+        player.api('prev');
+      } else if (e.key === 'MediaTrackNext') {
+        player.api('next');
+      }
+    });
+
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  let page = new URLSearchParams(url.search).get('page') ?? 1;
+
+  document.addEventListener('scroll', async () => {
+    if ((window.innerHeight + window.scrollY) < document.body.offsetHeight) {
+      return;
     }
-    else {
-        let url = new URL(window.location.href);
-        let page = new URLSearchParams(url.search).get("page") ?? 1;
 
-        document.addEventListener('scroll', async () => {
+    const res = await fetch(`${url.origin}${url.pathname}?page=${page}`).then((data) => data.text());
+    page += 1;
 
-            if ((window.innerHeight + window.scrollY) < document.body.offsetHeight) {
-                return;
-            }
+    const doc = document.implementation.createHTMLDocument().body;
 
-            let res = await fetch(`${url.origin}${url.pathname}?page=${++page}`).then(data => data.text());
+    doc.innerHTML = res;
 
-            let doc = document.implementation.createHTMLDocument().body;
+    const items = doc.querySelectorAll('div#main > div.container > ul.items > li.item');
+    const list = document.querySelector('div#main > div.container > ul.items');
 
-            doc.innerHTML = res;
+    if (!items || !list) return;
 
-            let items = doc.querySelectorAll("div#main > div.container > ul.items > li.item");
-            let list = document.querySelector("div#main > div.container > ul.items");
+    const spacers = list.querySelectorAll('li.spacer');
+    spacers.forEach((x) => list.removeChild(x));
 
-            if (!items || !list) return;
+    let count = 0;
 
-            let spacers = list.querySelectorAll("li.spacer");
-            spacers.forEach(x => list.removeChild(x));
+    items.forEach((x) => {
+      count += 1;
+      if (count % 6 === 0) return;
+      const temp = x;
+      temp.style['margin-right'] = '20px';
+    });
 
-            let count = 0;
-
-            items.forEach(x => {
-                count++;
-                if (count % 6 == 0) return;
-                x.style["margin-right"] = "20px"
-            });
-
-            list.append(...items);
-            list.append(...spacers);
-        });
-    }
+    list.append(...items);
+    list.append(...spacers);
+  });
 })();

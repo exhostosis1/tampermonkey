@@ -9,24 +9,27 @@
 // @match        http://seasonvar.ru/*
 // ==/UserScript==
 
-(async function() {
-    'use strict';
-    
-    let player;
+// eslint-disable-next-line wrap-iife, func-names
+(async function () {
+  // eslint-disable-next-line strict, lines-around-directive
+  'use strict';
 
-    await new Promise(resolve => setTimeout(() => { 
-        player = window.player;
-        resolve();
-     }, 2000));
-    
-    document.exitPictureInPicture = null;
+  let player;
 
-    document.addEventListener('keyup', (e) => {
-        if (e.key === 'MediaTrackPrevious') {
-            player.api('prev');
-        }
-        else if (e.key === 'MediaTrackNext') {
-            player.api('next');
-        }
-    });
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      player = window.player;
+      resolve();
+    }, 2000);
+  });
+
+  document.exitPictureInPicture = null;
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'MediaTrackPrevious') {
+      player.api('prev');
+    } else if (e.key === 'MediaTrackNext') {
+      player.api('next');
+    }
+  });
 })();
