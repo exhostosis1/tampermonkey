@@ -88,11 +88,13 @@
     const loginData = await postData('https://api-tv.ipnet.ua/api/v1/online-tv/account/login', {
       agg_id: '',
       password: '',
-    }).json();
+    });
 
-    if (loginData?.code === 200) {
-      window.localStorage.setItem('ngStorage-token', `'${loginData.data.token}'`);
-      window.localStorage.setItem('ngStorage-refresh_token', `'${loginData.data.refresh_token}'`);
+    if (loginData.ok) {
+      const { data } = (await loginData.json());
+
+      window.localStorage.setItem('ngStorage-token', `"${data.token}"`);
+      window.localStorage.setItem('ngStorage-refresh_token', `"${data.refresh_token}"`);
 
       document.location.reload();
     }
