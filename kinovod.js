@@ -73,17 +73,12 @@
     const spacers = list.querySelectorAll('li.spacer');
     spacers.forEach((x) => list.removeChild(x));
 
-    let count = 0;
-
-    items.forEach((x) => {
-      count += 1;
-      if (count % 6 === 0) return;
-      const temp = x;
-      temp.style['margin-right'] = '20px';
+    let html = list.innerHTML;
+    items.forEach((element) => {
+      html += ` ${element.outerHTML}`;
     });
 
-    list.append(...items);
-    list.append(...spacers);
+    list.innerHTML = html;
 
     const pagingElems = paging.querySelectorAll('li');
     pagingElems.forEach((x) => {
