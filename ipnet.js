@@ -86,8 +86,8 @@
     if (checkTokenDate(token)) return;
 
     const loginData = await postData('https://api-tv.ipnet.ua/api/v1/online-tv/account/login', {
-      agg_id: '405144097',
-      password: '667c7032876182efffebe32283907a44',
+      agg_id: '',
+      password: '',
     }).json();
 
     if (loginData?.code === 200) {
@@ -191,7 +191,7 @@
     });
   }
 
-  const LOGIN_REQUIRED = false;
+  const LOGIN_REQUIRED = true;
   const SWITCH_TO_CHANNEL = false;
   const CHANNELS_TO_ADD = CHANNELS;
   const FAVOURITES = ['Viasat History'];
