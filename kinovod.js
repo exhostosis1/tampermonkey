@@ -36,21 +36,36 @@
   }
 
   const url = new URL(window.location.href);
-  let page = new URLSearchParams(url.search).get('page') ?? 1;
+  let page = url.searchParams.get('page');
+  page = page ? +page + 1 : 2;
+
+  function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+
+    return (
+      rect.top >= 0
+      && rect.left >= 0
+      && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+      && rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
+
+  let currentPage = 0;
 
   document.addEventListener('scroll', async () => {
-    if ((window.innerHeight + window.scrollY) < document.body.offsetHeight) {
-      return;
-    }
+    const el = document.getElementById('pg_full');
+    if (!el || !isElementInViewport(el) || currentPage === page) return;
+    currentPage = page;
 
-    const res = await fetch(`${url.origin}${url.pathname}?page=${page}`).then((data) => data.text());
-    page += 1;
+    url.searchParams.set('page', page);
+    const res = await fetch(url.href);
 
-    const doc = document.implementation.createHTMLDocument().body;
+    if (!res.ok) return;
 
-    doc.innerHTML = res;
+    const newDoc = document.implementation.createHTMLDocument().body;
+    newDoc.innerHTML = await res.text();
 
-    const items = doc.querySelectorAll('div#main > div.container > ul.items > li.item');
+    const items = newDoc.querySelectorAll('div#main > div.container > ul.items > li.item');
     const list = document.querySelector('div#main > div.container > ul.items');
 
     if (!items || !list) return;
@@ -69,5 +84,7 @@
 
     list.append(...items);
     list.append(...spacers);
+
+    page += 1;
   });
 })();
