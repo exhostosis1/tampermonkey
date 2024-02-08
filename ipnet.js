@@ -62,12 +62,11 @@
     const { exp } = JSON.parse(atob(encryptedDate));
     if (!exp) return false;
 
-    const date = new Date(exp * 1000);
-    return date > new Date();
+    return new Date(exp * 1000) > new Date();
   }
 
-  async function postData(url = '', data = {}) {
-    const res = await fetch(url, {
+  function postData(url = '', data = {}) {
+    return fetch(url, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -79,24 +78,23 @@
       referrerPolicy: 'no-referrer',
       body: JSON.stringify(data),
     });
-    return res.json();
   }
 
   async function login() {
     const token = window.localStorage.getItem('ngStorage-token');
 
-    if (!checkTokenDate(token)) {
-      const loginData = await postData('https://api-tv.ipnet.ua/api/v1/online-tv/account/login', {
-        agg_id: '405144097',
-        password: '667c7032876182efffebe32283907a44',
-      });
+    if (checkTokenDate(token)) return;
 
-      if (loginData?.code === 200) {
-        window.localStorage.setItem('ngStorage-token', `'${loginData.data.token}'`);
-        window.localStorage.setItem('ngStorage-refresh_token', `'${loginData.data.refresh_token}'`);
+    const loginData = await postData('https://api-tv.ipnet.ua/api/v1/online-tv/account/login', {
+      agg_id: '405144097',
+      password: '667c7032876182efffebe32283907a44',
+    }).json();
 
-        document.location.reload();
-      }
+    if (loginData?.code === 200) {
+      window.localStorage.setItem('ngStorage-token', `'${loginData.data.token}'`);
+      window.localStorage.setItem('ngStorage-refresh_token', `'${loginData.data.refresh_token}'`);
+
+      document.location.reload();
     }
   }
 
@@ -132,29 +130,34 @@
       channels: selectedChannels,
     };
     scope.Channels.categories.push(category);
+    scope.Channels.all_channels.splice(0, 0, ...selectedChannels);
   }
 
-  function setChannel(scope, channelIndex) {
-    if (scope.Channels.currentChannel.name !== channelIndex) {
-      const index = scope.Channels.all_channels.findIndex((x) => x.id === channelIndex);
-      const channel = scope.Channels.all_channels[index];
+  function addToFavourites(scope, channels) {
+    const selectedChannels = scope.Channels
+      .all_channels.filter((x) => channels.includes(x.name));
 
-      if (channel) {
-        scope.Channels?.switchChannels(channel, index);
-        scope.Nav.blocks.topDescription.handler(false);
-        scope.Channels.setCurrentChannelIndex(channel.id, index);
-      }
+    if (selectedChannels.length === 0) return;
+
+    const category = {
+      name: 'Favourites',
+      note: 'favourites',
+      $$hashKey: 'favourites',
+      visibility: true,
+      channels: selectedChannels,
+    };
+    scope.Channels.categories.push(category);
+  }
+
+  function setChannel(scope, channelName) {
+    const index = scope.Channels.all_channels.findIndex((x) => x.name === channelName);
+    const channel = scope.Channels.all_channels[index];
+
+    if (channel) {
+      scope.Channels?.switchChannels(channel, index);
+      scope.Nav.blocks.topDescription.handler(false);
+      scope.Channels.setCurrentChannelIndex(channel.id, index);
     }
-  }
-
-  function buyChannels(scope) {
-    scope.Channels.categories.forEach((c) => c.channels.forEach((x) => {
-      if (x.can_buy) {
-        const temp = x;
-        temp.can_buy = false;
-        temp.is_tshift = true;
-      }
-    }));
   }
 
   function buyCurrentChannel(s) {
@@ -188,9 +191,10 @@
     });
   }
 
-  const LOGIN_REQUIRED = true;
+  const LOGIN_REQUIRED = false;
   const SWITCH_TO_CHANNEL = false;
-  const CHANNELS_TO_ADD = 'all';
+  const CHANNELS_TO_ADD = CHANNELS;
+  const FAVOURITES = ['Viasat History'];
 
   if (LOGIN_REQUIRED) await login();
 
@@ -200,11 +204,15 @@
 
   const scope = await findScope();
 
-  if (CHANNELS_TO_ADD) addChannels(scope, CHANNELS_TO_ADD === 'all' ? CHANNELS : CHANNELS.filter((x) => CHANNELS_TO_ADD.includes(x.id)));
+  if (CHANNELS_TO_ADD) addChannels(scope, CHANNELS_TO_ADD);
   if (SWITCH_TO_CHANNEL) setChannel(scope, SWITCH_TO_CHANNEL);
   processMediaKeys(scope);
-  buyCurrentChannel(scope);
-  buyChannels(scope);
+
+  if (!scope.Channels.currentChannel.is_tshift) {
+    buyCurrentChannel(scope);
+  }
+
+  if (FAVOURITES) addToFavourites(scope, FAVOURITES);
 
   scope.Nav?.hideAll();
   scope.Player?.toggleCursorMouse();
