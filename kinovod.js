@@ -20,7 +20,7 @@
     setTimeout(() => {
       player = window.pljsglobal && window.pljsglobal[0];
       resolve();
-    }, 2000);
+    }, 500);
   });
 
   if (player) {
@@ -53,8 +53,8 @@
   let currentPage = 0;
 
   document.addEventListener('scroll', async () => {
-    const el = document.getElementById('pg_full');
-    if (!el || !isElementInViewport(el) || currentPage === page) return;
+    const paging = document.getElementById('pg_full');
+    if (!paging || !isElementInViewport(paging) || currentPage === page) return;
     currentPage = page;
 
     url.searchParams.set('page', page);
@@ -68,7 +68,7 @@
     const items = newDoc.querySelectorAll('div#main > div.container > ul.items > li.item');
     const list = document.querySelector('div#main > div.container > ul.items');
 
-    if (!items || !list) return;
+    if (items.length === 0 || !list) return;
 
     const spacers = list.querySelectorAll('li.spacer');
     spacers.forEach((x) => list.removeChild(x));
@@ -84,6 +84,15 @@
 
     list.append(...items);
     list.append(...spacers);
+
+    const pagingElems = paging.querySelectorAll('li');
+    pagingElems.forEach((x) => {
+      if (+x.firstChild.innerHTML === page) {
+        x.classList.add('active');
+      } else {
+        x.classList.remove('active');
+      }
+    });
 
     page += 1;
   });
