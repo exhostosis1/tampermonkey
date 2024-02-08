@@ -25,10 +25,15 @@
 
   if (player) {
     document.addEventListener('keyup', (e) => {
-      if (e.key === 'MediaTrackPrevious') {
-        player.api('prev');
-      } else if (e.key === 'MediaTrackNext') {
-        player.api('next');
+      switch (e.key) {
+        case 'MediaTrackPrevious':
+          player.api('prev');
+          break;
+        case 'MediaTrackNext':
+          player.api('next');
+          break;
+        default:
+          break;
       }
     });
 

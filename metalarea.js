@@ -15,8 +15,8 @@
   'use strict';
 
   const LOGIN_PAGE = 'https://metalarea.org/forum/index.php?act=Login&CODE=01';
-  const USERNAME = 'exhostosis';
-  const PASSWORD = 'e74eae2fd9adc9f';
+  const USERNAME = '';
+  const PASSWORD = '';
 
   if (document.getElementById('userlinksguest')) {
     const formData = {
@@ -28,9 +28,7 @@
     let html = `<input type='hidden' name='referer' value='${window.location.href.replace('http:', 'https:')}'>`;
 
     Object.keys(formData).forEach((key) => {
-      if (Object.prototype.hasOwnProperty.call(formData, key)) {
-        html += `<input type='hidden' name='${key}' value='${formData[key]}'></input>`;
-      }
+      html += `<input type='hidden' name='${key}' value='${formData[key]}'></input>`;
     });
 
     const formElement = document.createElement('form');

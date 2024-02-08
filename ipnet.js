@@ -90,14 +90,14 @@
       password: '',
     });
 
-    if (loginData.ok) {
-      const { data } = (await loginData.json());
+    if (!loginData.ok) return;
 
-      window.localStorage.setItem('ngStorage-token', `"${data.token}"`);
-      window.localStorage.setItem('ngStorage-refresh_token', `"${data.refresh_token}"`);
+    const { data } = (await loginData.json());
 
-      document.location.reload();
-    }
+    window.localStorage.setItem('ngStorage-token', `"${data.token}"`);
+    window.localStorage.setItem('ngStorage-refresh_token', `"${data.refresh_token}"`);
+
+    document.location.reload();
   }
 
   async function findScope() {
@@ -177,18 +177,21 @@
     const video = document.getElementsByTagName('video')[0];
 
     document.addEventListener('keyup', (e) => {
-      if (e.key === 'MediaTrackPrevious') {
-        scope.Channels.prevChannel();
-      } else if (e.key === 'MediaTrackNext') {
-        scope.Channels.nextChannel();
-      } else if (e.key === 'MediaPlayPause') {
-        if (video.paused) {
-          scope.Player.restore();
-        } else {
-          scope.Player.pause();
-        }
-      } else if (e.key === 'Enter') {
-        scope.Nav.toggleAll();
+      switch (e.key) {
+        case 'MediaTrackPrevious':
+          scope.Channels.prevChannel();
+          break;
+        case 'MediaTrackNext':
+          scope.Channels.nextChannel();
+          break;
+        case 'MediaPlayPause':
+          if (video.paused) scope.Player.restore(); else scope.Player.pause();
+          break;
+        case 'Enter':
+          scope.Nav.toggleAll();
+          break;
+        default:
+          break;
       }
     });
   }
