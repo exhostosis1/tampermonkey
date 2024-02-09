@@ -58,7 +58,11 @@
   let currentPage = 0;
 
   document.addEventListener('scroll', async () => {
-    const paging = document.getElementById('pg_full');
+    const pagingFull = document.getElementById('pg_full');
+    const pagingSmall = document.getElementById('pg_small');
+
+    const paging = pagingFull?.computedStyleMap().get('display').value === 'none' ? pagingSmall : pagingFull;
+
     if (!paging || !isElementInViewport(paging) || currentPage === page) return;
     currentPage = page;
 
@@ -76,23 +80,47 @@
     if (items.length === 0 || !list) return;
 
     const spacers = list.querySelectorAll('li.spacer');
-    spacers.forEach((x) => list.removeChild(x));
+    spacers.forEach((x) => x.remove());
 
     let html = list.innerHTML;
     items.forEach((element) => {
       html += ` ${element.outerHTML}`;
     });
 
+    const elemCount = Math.floor(list.offsetWidth / list.children[0].offsetWidth);
+
+    let spacersCount = elemCount - (items.length % elemCount || elemCount);
+
+    while (spacersCount > 0) {
+      html += ' <li class="spacer"></li>';
+      spacersCount -= 1;
+    }
+
     list.innerHTML = html;
 
-    const pagingElems = paging.querySelectorAll('li');
-    pagingElems.forEach((x) => {
-      if (+x.firstChild.innerHTML === page) {
-        x.classList.add('active');
-      } else {
-        x.classList.remove('active');
-      }
-    });
+    if (paging.id === 'pg_full') {
+      const pagingElems = paging.querySelectorAll('li');
+      pagingElems.forEach((x) => {
+        if (+x.firstChild.innerHTML === page) {
+          x.classList.add('active');
+        } else {
+          x.classList.remove('active');
+        }
+      });
+    } else if (paging.id === 'pg_small') {
+      const pagingElems = paging.querySelectorAll('option');
+      const numOfPages = pagingElems[pagingElems.length - 1].getAttribute('value');
+      pagingElems.forEach((temp) => {
+        const x = temp;
+        if (+x.getAttribute('value') === page) {
+          x.setAttribute('selected', 'selected');
+          x.innerHTML = `${page} / ${numOfPages}`;
+        } else {
+          x.removeAttribute('selected');
+          x.innerHTML = `${x.getAttribute('value')}`;
+        }
+      });
+    }
 
     page += 1;
   });
