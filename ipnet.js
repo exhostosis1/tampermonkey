@@ -118,7 +118,8 @@
     });
   }
 
-  function addChannels(scope, channels) {
+  function addChannels(s, channels) {
+    const scope = s;
     const selectedChannels = channels.filter((x) => scope.Channels
       .all_channels.findIndex((y) => y.id === x) === -1);
 
@@ -131,11 +132,14 @@
       visibility: true,
       channels: selectedChannels,
     };
+    scope.Channels.img_to_category.added = 'category_vip.svg';
+
     scope.Channels.categories.push(category);
     scope.Channels.all_channels.splice(0, 0, ...selectedChannels);
   }
 
-  function addToFavourites(scope, channels) {
+  function addToFavourites(s, channels) {
+    const scope = s;
     const selectedChannels = scope.Channels
       .all_channels.filter((x) => channels.includes(x.name));
 
@@ -148,6 +152,8 @@
       visibility: true,
       channels: selectedChannels,
     };
+    scope.Channels.img_to_category.favourites = 'category_top_serials.svg';
+
     scope.Channels.categories.push(category);
   }
 
