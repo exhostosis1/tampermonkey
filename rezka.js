@@ -14,23 +14,6 @@
   // eslint-disable-next-line strict, lines-around-directive
   'use strict';
 
-  const header = document.getElementById('top-nav');
-  const sticky = header.offsetTop;
-
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > sticky) {
-      header.style.position = 'fixed';
-    } else {
-      header.style.position = 'relative';
-    }
-  });
-
-  const url = new URL(window.location.href);
-  const reg = /(?<=\/page\/)\d+(?=\/)/gi;
-  const match = reg.exec(url.pathname);
-
-  let page = match ? +match[0] + 1 : 2;
-
   function isElementInViewport(el) {
     const rect = el.getBoundingClientRect();
 
@@ -42,15 +25,28 @@
     );
   }
 
+  const header = document.getElementById('top-nav');
+  const sticky = header.offsetTop;
+
+  const url = new URL(window.location.href);
+  const reg = /(?<=\/page\/)\d+(?=\/)/gi;
+  const match = reg.exec(url.pathname);
+
+  let page = match ? +match[0] + 1 : 2;
+
   let currentPage = 0;
 
   document.addEventListener('scroll', async () => {
+    if (window.scrollY > sticky) {
+      header.style.position = 'fixed';
+    } else {
+      header.style.position = 'relative';
+    }
+
     const paging = document.getElementsByClassName('b-navigation')[0];
 
     if (!paging || !isElementInViewport(paging) || currentPage === page) return;
     currentPage = page;
-
-    url.searchParams.set('page', page);
 
     if (match) {
       url.href.replace(reg, page);
@@ -72,13 +68,7 @@
     if (items.length === 0 || !list) return;
 
     const nav = list.querySelector('div.b-navigation');
-    list.removeChild(nav);
-
-    items.forEach((x) => {
-      list.appendChild(x);
-    });
-
-    list.appendChild(nav);
+    nav.before(...items);
 
     page += 1;
   });
