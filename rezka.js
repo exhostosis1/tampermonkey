@@ -48,14 +48,16 @@
     if (!paging || !isElementInViewport(paging) || currentPage === page) return;
     currentPage = page;
 
+    const newurl = new URL(url);
+
     if (match) {
-      url.href.replace(reg, page);
+      newurl.pathname = newurl.pathname.replace(reg, page);
     } else {
-      url.pathname += url.pathname.endsWith('/') ? '' : '/';
-      url.pathname += `page/${page}/`;
+      newurl.pathname += url.pathname.endsWith('/') ? '' : '/';
+      newurl.pathname += `page/${page}/`;
     }
 
-    const res = await fetch(url.href);
+    const res = await fetch(newurl.href);
 
     if (!res.ok) return;
 
