@@ -28,13 +28,23 @@
   const header = document.getElementById('top-nav');
   const sticky = header.offsetTop;
 
+  const paging = document.querySelector('div.b-navigation');
+
   const url = new URL(window.location.href);
   const reg = /(?<=\/page\/)\d+(?=\/)/gi;
   const match = reg.exec(url.pathname);
 
-  let page = match ? +match[0] + 1 : 2;
+  let page;
 
-  let currentPage = 0;
+  if (match) {
+    page = +match[0];
+  } else {
+    url.pathname += url.pathname.endsWith('/') ? '' : '/';
+    url.pathname += 'page/1/';
+    page = 1;
+  }
+
+  let pending = false;
 
   document.addEventListener('scroll', async () => {
     if (window.scrollY > sticky) {
@@ -43,21 +53,13 @@
       header.style.position = 'relative';
     }
 
-    const paging = document.querySelector('div.b-navigation');
+    if (!paging || !isElementInViewport(paging) || pending) return;
+    pending = true;
+    page += 1;
 
-    if (!paging || !isElementInViewport(paging) || currentPage === page) return;
-    currentPage = page;
+    url.pathname = url.pathname.replace(reg, page);
 
-    const newurl = new URL(url);
-
-    if (match) {
-      newurl.pathname = newurl.pathname.replace(reg, page);
-    } else {
-      newurl.pathname += url.pathname.endsWith('/') ? '' : '/';
-      newurl.pathname += `page/${page}/`;
-    }
-
-    const res = await fetch(newurl.href);
+    const res = await fetch(url.href);
 
     if (!res.ok) return;
 
@@ -69,7 +71,6 @@
     if (items.length === 0) return;
 
     paging.before(...items);
-
-    page += 1;
+    pending = false;
   });
 })();
