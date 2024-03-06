@@ -25,9 +25,6 @@
     );
   }
 
-  const header = document.getElementById('top-nav');
-  const sticky = header.offsetTop;
-
   const paging = document.querySelector('div.b-navigation');
 
   const url = new URL(window.location.href);
@@ -47,12 +44,6 @@
   let pending = false;
 
   document.addEventListener('scroll', async () => {
-    if (window.scrollY > sticky) {
-      header.style.position = 'fixed';
-    } else {
-      header.style.position = 'relative';
-    }
-
     if (!paging || !isElementInViewport(paging) || pending) return;
     pending = true;
     page += 1;
