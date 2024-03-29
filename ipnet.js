@@ -100,7 +100,7 @@
     document.location.reload();
   }
 
-  async function findScope() {
+  function findScope() {
     return new Promise((resolve, reject) => {
       const interval = setInterval(() => {
         const video = document.getElementsByTagName('video')[0];
@@ -118,28 +118,24 @@
     });
   }
 
-  function addChannels(s, channels) {
-    const scope = s;
-    const selectedChannels = channels.filter((x) => scope.Channels
-      .all_channels.findIndex((y) => y.id === x) === -1);
-
-    if (selectedChannels.length === 0) return;
+  function addChannels(scope, channelsToAdd) {
+    const localScope = scope;
 
     const category = {
       name: 'Added',
       note: 'added',
       $$hashKey: 'added',
       visibility: true,
-      channels: selectedChannels,
+      channels: channelsToAdd,
     };
-    scope.Channels.img_to_category.added = 'category_vip.svg';
+    localScope.Channels.img_to_category.added = 'category_vip.svg';
 
-    scope.Channels.categories.push(category);
-    scope.Channels.all_channels.splice(0, 0, ...selectedChannels);
+    localScope.Channels.categories.push(category);
+    localScope.Channels.all_channels.splice(0, 0, ...channelsToAdd);
   }
 
-  function addToFavourites(s, channels) {
-    const scope = s;
+  function addToFavourites(scope, channels) {
+    const localScope = scope;
     const selectedChannels = scope.Channels
       .all_channels.filter((x) => channels.includes(x.name));
 
@@ -152,9 +148,9 @@
       visibility: true,
       channels: selectedChannels,
     };
-    scope.Channels.img_to_category.favourites = 'category_top_serials.svg';
+    localScope.Channels.img_to_category.favourites = 'category_top_serials.svg';
 
-    scope.Channels.categories.push(category);
+    localScope.Channels.categories.push(category);
   }
 
   function setChannel(scope, channelName) {
@@ -168,15 +164,15 @@
     }
   }
 
-  function buyCurrentChannel(s) {
-    const scope = s;
+  function buyCurrentChannel(scope) {
+    const localScope = scope;
 
-    scope.Channels.currentChannel.is_tshift = true;
+    localScope.Channels.currentChannel.is_tshift = true;
     const epg = scope.EPG.currentChannelEPG;
-    scope.EPG.currentChannelEPG = [];
-    scope.$apply();
-    scope.EPG.currentChannelEPG = epg;
-    scope.$apply();
+    localScope.EPG.currentChannelEPG = [];
+    localScope.$apply();
+    localScope.EPG.currentChannelEPG = epg;
+    localScope.$apply();
   }
 
   function processMediaKeys(scope) {
@@ -213,7 +209,13 @@
     setTimeout(() => resolve(), 2000);
   });
 
-  const scope = await findScope();
+  let scope;
+
+  try {
+    scope = await findScope();
+  } catch {
+    return;
+  }
 
   if (CHANNELS_TO_ADD) addChannels(scope, CHANNELS_TO_ADD);
   if (SWITCH_TO_CHANNEL) setChannel(scope, SWITCH_TO_CHANNEL);

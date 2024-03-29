@@ -55,16 +55,16 @@
     );
   }
 
-  let currentPage = 0;
+  let pending = false;
+
+  const pagingFull = document.getElementById('pg_full');
+  const pagingSmall = document.getElementById('pg_small');
+
+  const paging = pagingFull?.computedStyleMap().get('display').value === 'none' ? pagingSmall : pagingFull;
 
   document.addEventListener('scroll', async () => {
-    const pagingFull = document.getElementById('pg_full');
-    const pagingSmall = document.getElementById('pg_small');
-
-    const paging = pagingFull?.computedStyleMap().get('display').value === 'none' ? pagingSmall : pagingFull;
-
-    if (!paging || !isElementInViewport(paging) || currentPage === page) return;
-    currentPage = page;
+    if (pending || !paging || !isElementInViewport(paging)) return;
+    pending = true;
 
     url.searchParams.set('page', page);
     const res = await fetch(url.href);
@@ -123,5 +123,6 @@
     }
 
     page += 1;
+    pending = false;
   });
 })();

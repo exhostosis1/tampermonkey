@@ -44,7 +44,7 @@
   let pending = false;
 
   document.addEventListener('scroll', async () => {
-    if (!paging || !isElementInViewport(paging) || pending) return;
+    if (pending || !paging || !isElementInViewport(paging)) return;
     pending = true;
     page += 1;
 
