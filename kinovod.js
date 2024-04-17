@@ -14,6 +14,32 @@
   // eslint-disable-next-line strict, lines-around-directive
   'use strict';
 
+  //   div#comments,
+  // div#footer > p:first-child,
+  // ul > li:has(a[href="/tv"]),
+  // ul > li:has(a[href="/soon"]),
+  // ul > li:has(a[href="/collections"]) {
+  //   display:none !important;
+  // }
+
+  // div#header {
+  //   position: sticky;
+  //   margin-top: 0;
+  // }
+
+  function setStyle(query, cssParam, cssValue) {
+    document.querySelectorAll(query).forEach((elem) => {
+      const el = elem;
+      el.style[cssParam] = cssValue;
+    });
+  }
+
+  setStyle('div#comments, div#footer > p:first-child, ul > li:has(a[href="/tv"]), ul > li:has(a[href="/soon"]), ul > li:has(a[href="/collections"])', 'display', 'none');
+
+  const header = document.getElementById('header');
+  header.style.position = 'sticky';
+  header.style['margin-top'] = 0;
+
   let player;
 
   await new Promise((resolve) => {

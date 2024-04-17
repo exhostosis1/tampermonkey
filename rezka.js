@@ -14,6 +14,21 @@
   // eslint-disable-next-line strict, lines-around-directive
   'use strict';
 
+  function setStyle(query, cssParam, cssValue) {
+    document.querySelectorAll(query).forEach((elem) => {
+      const el = elem;
+      el.style[cssParam] = cssValue;
+    });
+  }
+
+  setStyle('.b-collections__newest, #hd-comments-list, .b-newest_slider_wrapper, table.b-post__actions td:first-child, .b-dwnapp, #addcomment-title, #comments-form, #hd-comments-navigation', 'display', 'none');
+
+  setStyle('.b-content__inline_inner_mainprobar', 'padding-right', '0');
+  setStyle('.b-wrapper', 'width', '1700px');
+  setStyle('#cdnplayer, #cdnplayer-container', 'height', '720px');
+  setStyle('#cdnplayer, #cdnplayer-container', 'width', 'auto');
+  setStyle('#top-nav', 'position', 'sticky');
+
   function isElementInViewport(el) {
     const rect = el.getBoundingClientRect();
 

@@ -14,6 +14,16 @@
   // eslint-disable-next-line strict, lines-around-directive
   'use strict';
 
+  function setStyle(query, cssParam, cssValue) {
+    document.querySelectorAll(query).forEach((elem) => {
+      const el = elem;
+      el.style[cssParam] = cssValue;
+    });
+  }
+
+  setStyle('div.wrapper', 'margin-top', '0');
+  setStyle('div.header-icon', 'display', 'none');
+
   let player;
 
   await new Promise((resolve) => {
