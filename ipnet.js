@@ -269,11 +269,16 @@
 
   flyout.style.display = 'none';
   flyout.style.position = 'absolute';
-  flyout.style.width = '150px';
+  flyout.style.width = '200px';
   flyout.style.height = '30px';
-  flyout.style['background-color'] = 'white';
+  flyout.style['background-color'] = 'gray';
+  flyout.style.color = 'white';
   flyout.style['z-index'] = '999';
+  flyout.style.textAlign = 'center';
+  flyout.style['padding-top'] = '10px';
+
   flyout.processingFunction = () => { };
+
   flyout.addEventListener('click', () => {
     flyout.processingFunction();
     flyout.style.display = 'none';
@@ -294,7 +299,7 @@
       return () => removeFromFavourites(scope, name);
     }
 
-    return () => {};
+    return () => { };
   }
 
   channelButtons.forEach((button) => {
