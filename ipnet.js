@@ -134,7 +134,7 @@
     localScope.Channels.all_channels.splice(0, 0, ...channelsToAdd);
   }
 
-  function addToFavourites(scope, channels) {
+  function createFavourites(scope, channels) {
     const localScope = scope;
     const selectedChannels = scope.Channels
       .all_channels.filter((x) => channels.includes(x.name));
@@ -151,6 +151,39 @@
     localScope.Channels.img_to_category.favourites = 'category_top_serials.svg';
 
     localScope.Channels.categories.push(category);
+  }
+
+  const favname = 'favourite_items';
+  let FAVOURITES = localStorage.getItem(favname).split(',').filter((x) => x.length > 0) || [];
+
+  function addToFavourites(scope, channelName) {
+    if (FAVOURITES.length === 0) {
+      FAVOURITES.push(channelName);
+      createFavourites(scope, FAVOURITES);
+      localStorage.setItem(favname, FAVOURITES);
+      return;
+    }
+
+    const category = scope.Channels.categories.find((x) => x.name === 'Favourites');
+    const channel = scope.Channels.all_channels.find((x) => x.name === channelName);
+
+    if (!category || !channel) return;
+
+    category.channels.push(channel);
+
+    FAVOURITES.push(channelName);
+    localStorage.setItem(favname, FAVOURITES);
+  }
+
+  function removeFromFavourites(scope, channelName) {
+    const category = scope.Channels.categories.find((x) => x.name === 'Favourites');
+    const index = category.channels.findIndex((x) => x.name === channelName);
+
+    if (!category || index < 0) return;
+
+    category.channels.splice(index, 1);
+    FAVOURITES = category.channels.map((x) => x.name);
+    localStorage.setItem(favname, FAVOURITES);
   }
 
   function setChannel(scope, channelName) {
@@ -201,7 +234,6 @@
   const LOGIN_REQUIRED = true;
   const SWITCH_TO_CHANNEL = false;
   const CHANNELS_TO_ADD = CHANNELS;
-  const FAVOURITES = ['Viasat History'];
 
   if (LOGIN_REQUIRED) await login();
 
@@ -225,9 +257,61 @@
     buyCurrentChannel(scope);
   }
 
-  if (FAVOURITES) addToFavourites(scope, FAVOURITES);
+  if (FAVOURITES.length > 0) createFavourites(scope, FAVOURITES);
 
   scope.Nav?.hideAll();
   scope.Player?.toggleCursorMouse();
   document.getElementsByClassName('overlay')[0].hidden = true;
+
+  const channelButtons = document.querySelectorAll('.channels-block md-list-item button');
+
+  const flyout = document.createElement('div');
+
+  flyout.style.display = 'none';
+  flyout.style.position = 'absolute';
+  flyout.style.width = '150px';
+  flyout.style.height = '30px';
+  flyout.style['background-color'] = 'white';
+  flyout.style['z-index'] = '999';
+  flyout.processingFunction = () => { };
+  flyout.addEventListener('click', () => {
+    flyout.processingFunction();
+    flyout.style.display = 'none';
+  });
+
+  const body = document.getElementsByTagName('body')[0];
+  body.append(flyout);
+  body.addEventListener('click', () => {
+    flyout.style.display = 'none';
+  });
+
+  function getProcessingFunction(name, mode) {
+    if (mode === 'add') {
+      return () => addToFavourites(scope, name);
+    }
+
+    if (mode === 'remove') {
+      return () => removeFromFavourites(scope, name);
+    }
+
+    return () => {};
+  }
+
+  channelButtons.forEach((button) => {
+    button.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+
+      const channelName = event.target.ariaLabel;
+
+      const isInFavourites = FAVOURITES.findIndex((x) => x === channelName) >= 0;
+
+      flyout.innerHTML = isInFavourites ? 'Remove from favourites' : 'Add to favourites';
+      flyout.processingFunction = getProcessingFunction(channelName, isInFavourites ? 'remove' : 'add');
+
+      flyout.style.left = `${event.clientX}px`;
+      flyout.style.top = `${event.clientY}px`;
+
+      flyout.style.display = 'block';
+    });
+  });
 })();
