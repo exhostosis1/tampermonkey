@@ -266,18 +266,29 @@
   const channelButtons = document.querySelectorAll('.channels-block md-list-item button');
 
   const flyout = document.createElement('div');
-
-  flyout.style.display = 'none';
-  flyout.style.position = 'absolute';
-  flyout.style.width = '200px';
-  flyout.style.height = '30px';
-  flyout.style['background-color'] = 'gray';
-  flyout.style.color = 'white';
-  flyout.style['z-index'] = '999';
-  flyout.style.textAlign = 'center';
-  flyout.style['padding-top'] = '10px';
-
+  flyout.id = 'flyout';
   flyout.processingFunction = () => { };
+
+  const css = document.createElement('style');
+
+  css.innerText = `
+  #flyout {
+    display: none;
+    position: absolute;
+    width: 200px;
+    height: 30px;
+    background-color: rgb(80, 80, 80);
+    color: white;
+    z-index: 999;
+    text-align: center;
+    padding-top: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+
+  #flyout:hover {
+    background-color: gray;
+  }`;
 
   flyout.addEventListener('click', () => {
     flyout.processingFunction();
@@ -289,6 +300,7 @@
   body.addEventListener('click', () => {
     flyout.style.display = 'none';
   });
+  body.append(css);
 
   function getProcessingFunction(name, mode) {
     if (mode === 'add') {
