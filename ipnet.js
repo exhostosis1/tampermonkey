@@ -154,7 +154,7 @@
   }
 
   const favname = 'favourite_items';
-  let FAVOURITES = localStorage.getItem(favname).split(',').filter((x) => x.length > 0) || [];
+  let FAVOURITES = localStorage.getItem(favname)?.split(',').filter((x) => x.length > 0) || [];
 
   function addToFavourites(scope, channelName) {
     if (FAVOURITES.length === 0) {
