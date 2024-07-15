@@ -4,7 +4,7 @@
 // @version      2024-02-13
 // @description  try to take over the world!
 // @author       You
-// @match        https://rezka.ag/*
+// @match        https://hdrezka.me/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=rezka.ag
 // @grant        none
 // ==/UserScript==
@@ -24,10 +24,11 @@
   setStyle('.b-collections__newest, #hd-comments-list, .b-newest_slider_wrapper, table.b-post__actions td:first-child, .b-dwnapp, #addcomment-title, #comments-form, #hd-comments-navigation', 'display', 'none');
 
   setStyle('.b-content__inline_inner_mainprobar', 'padding-right', '0');
-  setStyle('.b-wrapper', 'width', '1700px');
+  setStyle('#wrapper, .b-wrapper', 'width', '1700px');
   setStyle('#cdnplayer, #cdnplayer-container', 'height', '720px');
   setStyle('#cdnplayer, #cdnplayer-container', 'width', 'auto');
   setStyle('#top-nav', 'position', 'sticky');
+  setStyle('body.active-brand.pp', 'padding-top', '0 !important');
 
   function isElementInViewport(el) {
     const rect = el.getBoundingClientRect();
