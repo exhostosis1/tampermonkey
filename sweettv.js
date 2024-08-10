@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 // eslint-disable-next-line wrap-iife, func-names
-(function () {
+(async function () {
   // eslint-disable-next-line strict, lines-around-directive
   'use strict';
 
@@ -30,4 +30,76 @@
       button.click();
     }
   }, 1000);
+
+  function findPlyr() {
+    return new Promise((resolve) => {
+      const interval = setInterval(() => {
+        const plyr = document.getElementsByClassName('plyr')[0];
+        if (!plyr) return;
+
+        clearInterval(interval);
+        resolve(plyr);
+      }, 100);
+    });
+  }
+
+  const plyr = await findPlyr();
+  const parent = plyr.parentNode;
+  const prevstyle = {};
+
+  const body = document.getElementsByTagName('body')[0];
+
+  function setFullscreen() {
+    body.append(plyr);
+
+    prevstyle.position = plyr.style.position;
+    prevstyle.left = plyr.style.left;
+    prevstyle.top = plyr.style.top;
+    prevstyle.width = plyr.style.width;
+    prevstyle.height = plyr.style.height;
+    prevstyle['z-index'] = plyr.style['z-index'];
+
+    plyr.style.position = 'absolute';
+    plyr.style.left = '0';
+    plyr.style.top = '0';
+    plyr.style.width = '100%';
+    plyr.style.height = '100%';
+    plyr.style['z-index'] = '9999';
+  }
+
+  const oldFs = document.querySelector('button[data-plyr="fullscreen"]');
+  oldFs.style.display = 'none';
+
+  const newFs = document.createElement('button');
+  newFs.classList.add('plyr__control');
+  newFs.classList.add('plyr__controls__item');
+  newFs.setAttribute('data-plyr-item', '');
+  newFs.setAttribute('type', 'button');
+  newFs.setAttribute('data-plyr', 'fullscreen');
+
+  newFs.innerHTML = '<div data-plyr-item="" class="icon--exit--fullscreen"><svg><use xlink:href="/images/tv/sprite_player.svg#exit_fullscreen_svg"></use></svg></div>';
+
+  oldFs.parentNode.append(newFs);
+
+  function removeFullscreen(key) {
+    if (key.key !== 'Escape' && key.type !== 'click') return;
+
+    document.removeEventListener('keyup', removeFullscreen);
+    newFs.style.display = 'none';
+    oldFs.style.display = 'inline-block';
+
+    plyr.style.position = prevstyle.position;
+    plyr.style.left = prevstyle.left;
+    plyr.style.top = prevstyle.top;
+    plyr.style.width = prevstyle.width;
+    plyr.style.height = prevstyle.height;
+    plyr.style['z-index'] = prevstyle['z-index'];
+
+    parent.append(plyr);
+  }
+
+  setFullscreen();
+
+  newFs.addEventListener('click', removeFullscreen);
+  document.addEventListener('keyup', removeFullscreen);
 })();
