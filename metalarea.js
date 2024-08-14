@@ -9,9 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-// eslint-disable-next-line wrap-iife, func-names
 (function () {
-  // eslint-disable-next-line strict, lines-around-directive
   'use strict';
 
   const LOGIN_PAGE = 'https://metalarea.org/forum/index.php?act=Login&CODE=01';

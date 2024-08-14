@@ -9,9 +9,7 @@
 // @match        http://seasonvar.ru/*
 // ==/UserScript==
 
-// eslint-disable-next-line wrap-iife, func-names
 (async function () {
-  // eslint-disable-next-line strict, lines-around-directive
   'use strict';
 
   function setStyle(query, cssParam, cssValue) {
