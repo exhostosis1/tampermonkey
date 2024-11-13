@@ -28,7 +28,7 @@
     const reg = /(?<=refresh_token=)[a-z0-9-]+/gi;
     let match = reg.exec(decodeURIComponent(document.cookie));
 
-    return match[0] === REFRESH_TOKEN;
+    return match && match[0] === REFRESH_TOKEN;
   }
 
   function removePromotion() {
