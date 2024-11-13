@@ -19,7 +19,7 @@
     const date = new Date();
     date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
 
-    document.cookie = `refresh_token=${REFRESH_TOKEN}; ${date.toUTCString}; path=/`;
+    document.cookie = `refresh_token=${REFRESH_TOKEN}; expires=${date.toUTCString()}; path=/`;
 
     location.reload();
   }
