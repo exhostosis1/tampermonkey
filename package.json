@@ -1,16 +1,7 @@
 {
-  "name": "tampermonkey",
-  "version": "1.0.0",
-  "main": "ipnet.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "devDependencies": {
-    "@eslint/js": "^9.26.0",
-    "eslint": "^9.26.0",
-    "globals": "^16.1.0"
+    "@eslint/js": "^9.29.0",
+    "eslint": "^9.29.0",
+    "globals": "^16.2.0"
   }
 }
