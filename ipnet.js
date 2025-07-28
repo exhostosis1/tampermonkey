@@ -91,8 +91,8 @@
     if (checkTokenDate(token)) return;
 
     const loginData = await postData('https://api-tv.ipnet.ua/api/v1/online-tv/account/login', {
-      agg_id: '',
-      password: '',
+      agg_id: Agg_id,
+      password: Password,
     });
 
     if (!loginData.ok) return;
