@@ -11,6 +11,13 @@
 
 (async function () {
   'use strict';
+  const Agg_id = '';
+  const Password = '';
+
+  if (Agg_id === '' || Password === '') {
+    console.log('no login data');
+    return;
+  }
 
   const CHANNELS = [
     {
