@@ -16,6 +16,11 @@
   const USERNAME = '';
   const PASSWORD = '';
 
+  if (!USERNAME || !PASSWORD) {
+    console.log('no login data');
+    return;
+  }
+
   if (document.getElementById('userlinksguest')) {
     const formData = {
       UserName: USERNAME,
