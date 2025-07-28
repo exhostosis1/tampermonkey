@@ -14,11 +14,6 @@
   const Agg_id = '';
   const Password = '';
 
-  if (Agg_id === '' || Password === '') {
-    console.log('no login data');
-    return;
-  }
-
   const CHANNELS = [
     {
       id: 382,
@@ -86,6 +81,11 @@
   }
 
   async function login() {
+    if (!Agg_id || !Password) {
+    console.log('no login data');
+    return;
+  }
+    
     const token = window.localStorage.getItem('ngStorage-token');
 
     if (checkTokenDate(token)) return;
