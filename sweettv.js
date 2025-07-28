@@ -16,6 +16,11 @@
   const REFRESH_TOKEN = '';
 
   function setLoginCookie() {
+    if (!REFRESH_TOKEN) {
+      console.log('no login data');
+      return;
+    }
+    
     const date = new Date();
     date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
 
