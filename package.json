@@ -1,7 +1,25 @@
 {
+  "name": "tampermonkey",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/exhostosis1/tampermonkey#readme",
+  "bugs": {
+    "url": "https://github.com/exhostosis1/tampermonkey/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exhostosis1/tampermonkey.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "ipnet.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "devDependencies": {
-    "@eslint/js": "^9.29.0",
-    "eslint": "^9.29.0",
-    "globals": "^16.2.0"
+    "@eslint/js": "^9.32.0",
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0"
   }
 }

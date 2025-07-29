@@ -82,9 +82,9 @@
 
   async function login() {
     if (!Agg_id || !Password) {
-    console.log('no login data');
-    return;
-  }
+      console.log('no login data');
+      return;
+    }
     
     const token = window.localStorage.getItem('ngStorage-token');
 

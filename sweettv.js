@@ -20,7 +20,7 @@
       console.log('no login data');
       return;
     }
-    
+
     const date = new Date();
     date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
 
@@ -45,6 +45,15 @@
         clearInterval(promoInterval);
       }
     }, 100);
+
+      const versionInterval = setInterval(() => {
+      const version = document.querySelector('div[check-version]');
+
+      if (version) {
+        version.style.display = 'none';
+        clearInterval(versionInterval);
+      }
+    }, 1000);
   };
 
   function setLowestQuality() {
