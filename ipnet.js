@@ -85,7 +85,7 @@
       console.log('no login data');
       return;
     }
-    
+
     const token = window.localStorage.getItem('ngStorage-token');
 
     if (checkTokenDate(token)) return;

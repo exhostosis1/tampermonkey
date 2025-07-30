@@ -46,7 +46,7 @@
       }
     }, 100);
 
-      const versionInterval = setInterval(() => {
+    const versionInterval = setInterval(() => {
       const version = document.querySelector('div[check-version]');
 
       if (version) {
@@ -143,6 +143,6 @@
 
   checkLoginCookie() || setLoginCookie();
   removePromotion();
-//  setLowestQuality();
-//  await processFullscreen();
+  //  setLowestQuality();
+  //  await processFullscreen();
 })();
