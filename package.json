@@ -1,7 +1,6 @@
 {
   "name": "tampermonkey",
   "version": "1.0.0",
-  "description": "",
   "homepage": "https://github.com/exhostosis1/tampermonkey#readme",
   "bugs": {
     "url": "https://github.com/exhostosis1/tampermonkey/issues"
@@ -19,7 +18,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "eslint": "^9.32.0",
+    "eslint": "^9.33.0",
     "globals": "^16.3.0"
-  }
+  },
+  "description": ""
 }
